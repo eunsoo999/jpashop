@@ -58,4 +58,17 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
+    // 회원 이름 변경
+    @Transactional
+    public void update(Long id, String name) {
+        Member member = memberRepository.findOne(id);
+        member.setName(name);
+
+        //트랜잭션 끝나고 커밋되는 시점에서 변경감지를 실행함.
+
+        /* 커멘드와 쿼리를 분리하라.
+         update한 후 반환타입을 Member로 해도 된다. 하지만 다시 조회를 위한 쿼리도 하게 되므로 변경성 메서드는
+         그대로 두거나 id정도를 반환하는 것도 하나의 개발 스타일.
+         */
+    }
 }
