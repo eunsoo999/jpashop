@@ -1,9 +1,7 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderStatus;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -119,4 +117,24 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class).getResultList();
+    }
+
+    // API 스펙에 맞춘 코드가 레포지토리에 들어와있다는 단점이 있어서 이 코드를 OrderSimpleQueryRepository로 이동.
+//    public List<OrderSimpleQueryDto> findOrderDtos() {
+//        return em.createQuery(
+//                "select new jpabook.jpashop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+//                        " from Order o" +
+//                        " join o.member m" +
+//                        " join o.delivery d", OrderSimpleQueryDto.class).getResultList();
+//
+//        /*
+//            new 명령어 사용해서 JPQL결과를 DTO로 변환
+//
+//        */
+//    }
 }
