@@ -124,6 +124,37 @@ public class OrderRepository {
                         " join fetch o.delivery d", Order.class).getResultList();
     }
 
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class)
+                .getResultList();
+        /**
+         * 일대다 관계(order - orderItems)에서 DB에서 조인을 하게되면 다(n)만큼 데이터 양이 증가한다.
+         * order가 2개고 각각의 orderItem이 2개라고 했을 때, 결과는 order가 4개로 나오게 되는 것이다. (DB 상 조인
+         * 해결을 위해 distinct를 추가하면 중복이 제거된다.
+         * 1. DB에서 쿼리에 distinct 키워드를 추가한다.  : 한 레코드의 결과가 모두 똑같이 중복되야 제거가 된다.
+         * 2. 애플리케이션에서 루트 Entity가 중복인 경우 중복을 제거한 후 컬렉션에 담는다.
+         *
+         * 단점은 페이징을 할 수 없다. 모든 데이터를 DB에서 읽어오고 메모리에서 페이징하기 때문
+        **/
+    }
+
+
+
     // API 스펙에 맞춘 코드가 레포지토리에 들어와있다는 단점이 있어서 이 코드를 OrderSimpleQueryRepository로 이동.
 //    public List<OrderSimpleQueryDto> findOrderDtos() {
 //        return em.createQuery(
