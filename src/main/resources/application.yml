@@ -14,6 +14,7 @@ spring:
         #show_sql: true
         format_sql: true
         default_batch_fetch_size: 100 # 쿼리 in (?,?,?...) <?> 개수 (글로벌)
+    #open-in-view: false #디폴트 : true
 
 logging:
   level:
